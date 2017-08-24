@@ -1,13 +1,18 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include<stdbool.h>
+#include<string.h>
+
+char url[]="as_graph.txt";
 
 int** alocarMatriz(int Linhas,int Colunas);
+void iniciaMatriz();
 
 int main(void){
-	char url[]="dblp.txt";
   int a1, a2, total, x, z, y, zz, cont=0;
 	int** pM;
+	/*
 	FILE *arq;
 	arq = fopen(url, "r");
 	if(arq == NULL)
@@ -15,7 +20,7 @@ int main(void){
 	else{
     fscanf(arq,"%d\n", &total);
 		pM = alocarMatriz(total, total/32);
-		/*
+
 		while( (fscanf(arq,"%d %d\n", &a1, &a2))!=EOF ){
 			x = a2/16;
 			z = a2 - (x*16);
@@ -27,9 +32,11 @@ int main(void){
 			//pM[a2][y]+= pott;
 			cont++;
 			//printf("%d %d\n", a1, a2);
-		}*/
+		}
   }
 	fclose(arq);
+	*/
+	iniciaMatriz();
 	printf("Coube: %d\n", cont);
 	printf("%d\n", pM[0][1]);
 	/*
@@ -56,4 +63,40 @@ int** alocarMatriz(int Linhas,int Colunas){ //Recebe a quantidade de Linhas e Co
        }
   }
 return m; //Retorna o Ponteiro para a Matriz Alocada
+}
+void iniciaMatriz(){
+	int vertices;
+	bool **matrizAdj;
+	FILE *arq;
+	arq = fopen(url, "r");
+	if(arq == NULL)
+			printf("Erro, nao foi possivel abrir o arquivo\n");
+	else{
+    fscanf(arq,"%d\n", &vertices);
+	bool marcados[vertices];
+	int grau[vertices];
+	int pai[vertices];
+	int nivel[vertices];
+	matrizAdj = new bool  *[vertices];
+  for(int i=0; i<vertices;i++) {
+    //matrizAdj[i][vertices];
+		grau[i]=0;
+		pai[i]=0;
+		nivel[i]=0;
+    memset(matrizAdj[i],0,sizeof(bool)*vertices);
+  }
+	int auxa;
+  int auxb;
+
+	/*
+  while (myfile.good()){
+      myfile>>auxa;
+      myfile>>auxb;
+	    grau[auxa-1]++;
+	    grau[auxb-1]++;
+	    this->matrizAdj[auxa-1][auxb-1] = true;
+      this->matrizAdj[auxb-1][auxa-1] = true;
+	}*/
+	}
+	fclose(arq);
 }
