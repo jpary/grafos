@@ -1,6 +1,8 @@
 # grafos
 Grafos - 2017/2
 
+Depois de tanto chorar
+
 Links úteis: 
 
 http://www.cplusplus.com/doc/tutorial/
