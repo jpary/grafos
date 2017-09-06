@@ -2,6 +2,8 @@
 #include <bitset>
 #include <stdio.h>
 #include <vector>
+#include <queue>
+#include <stack>
 #include <stdlib.h>
 
 using namespace std;
@@ -11,27 +13,26 @@ typedef struct a{
 	struct a* nextVertex;
 } LinkList;
 
-/*Vector already has a library, so no need to
-  create another type specifically for that*/ 
-
 class Graph{
 
-	LinkList** AdjList; // Adjacency Linked List
-	vector<int>* AdjVector; // Adjacency Vector
-	vector<bool>* AdjMatrix;
-	vector<bool> Rows;
-	int vertexNum;
-	int edgeNum;
-	int* vertexDegree;
-	int* degrees;
+	LinkList** AdjList; // Lista de Adjacência
+	vector<int>* AdjVector; // Vetor de Adjacência 
+	vector<bool>* AdjMatrix; // Matriz de Adjacência 
+	int vertexNum; // Número de Vértices
+	int edgeNum; // Número de Arestas
+	int* vertexDegree; // Vetor de Grau de Arestas
+	int* degrees; // Vetor Número de Vértices com grau x
 
 	public:
+
+//-------------------Lista de Adjacência---------------------------------------------------------------//
 	
 		int initAdjList(int size){
 			if (size <= 0) return 1;
-			edgeNum = 0; 
-			AdjList = new LinkList* [size];
-			vertexNum = size;
+			edgeNum = 0; // Nenhuma aresta formada
+			AdjList = new LinkList* [size]; // Criando array dos ponteiros iniciais 
+							// das listas de adjacências de cada vértice
+			vertexNum = size; // Inicializando número de vértices
 			vertexDegree = new int [size] ();
 			degrees = new int [size] ();
 			degrees[0] = vertexNum;
@@ -62,7 +63,7 @@ class Graph{
 			vertexDegree[v2-1]++;
 		}
 
-//-----------------------------------------------------------------------------------------------------//
+//-----------------Vetor de Adjacência-----------------------------------------------------------------//
 		
 		int initAdjVector(int size){
 			if (size <= 0) return 1;
@@ -79,8 +80,8 @@ class Graph{
 			int size1 = AdjVector[v1-1].size();
 			int size2 = AdjVector[v2-1].size();
 
-			AdjVector[v1-1].push_back(v2);
-			AdjVector[v2-1].push_back(v1);
+			insert(AdjVector[v1-1], v2);
+			insert(AdjVector[v2-1], v1);
 
 			edgeNum++;
 
@@ -90,23 +91,20 @@ class Graph{
 			degrees[size2+1]++;
 		}
 
-//-----------------------------------------------------------------------------------------------------//
+//-------------------Matriz de Adjacência--------------------------------------------------------------//
 		
 		int initAdjMatrix(int size){
 			if (size <= 0) return 1;
 			edgeNum = 0;
 			vertexNum = size;
-			printf("1\n");
 			AdjMatrix = new vector<bool> [size];
-			printf("2\n");
 			for (int i = 0; i < size; i++){
 				AdjMatrix[i].resize(size, false);
 			}
-			printf("3\n");
 			vertexDegree = new int [size] ();
 			degrees = new int [size] ();
 			degrees[0] = vertexNum;
-			return 0;	
+			return 0;
 		}
 
 		void addEdgeMatrix(int v1, int v2){
@@ -123,7 +121,8 @@ class Graph{
 			vertexDegree[v1-1]++;
 			vertexDegree[v2-1]++;
 		}
-
+//--------------Printando informações do Grafo---------------------------------------------------------//
+	
 		void printObj(FILE* file){
 			fprintf(file, "# n = %d\n", vertexNum);
 			fprintf(file, "# m = %d\n", edgeNum);
@@ -135,12 +134,14 @@ class Graph{
 };
 
 int main(){
+	vector<int> v {100, 101, 103, 104};
+	printf("%d\n", insert(v, 102));
 	Graph G;
 	FILE* in;
 	FILE* out;
 	int a;	
 	cin >> a;
-	in = fopen("subdblp.txt", "r");
+	in = fopen("dblp.txt", "r");
 	out = fopen("output.txt", "w");
 	if (!in) fprintf(out, "Could not open file.\n");
 	else{
