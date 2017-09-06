@@ -5,6 +5,7 @@
 #include <queue>
 #include <stack>
 #include <stdlib.h>
+#include <boost/dynamic_bitset.hpp>
 
 using namespace std;
 
@@ -17,7 +18,8 @@ class Graph{
 
 	LinkList** AdjList; // Lista de Adjacência
 	vector<int>* AdjVector; // Vetor de Adjacência 
-	vector<bool>* AdjMatrix; // Matriz de Adjacência 
+	vector<bool>* AdjMatrixBool; // Matriz de Adjacência; vector<bool>
+	boost::dynamic_bitset<>* AdjMatrixSet; // Matriz de Adjacência; boost::dynamic_bitset
 	int vertexNum; // Número de Vértices
 	int edgeNum; // Número de Arestas
 	int* vertexDegree; // Vetor de Grau de Arestas
@@ -91,15 +93,15 @@ class Graph{
 			degrees[size2+1]++;
 		}
 
-//-------------------Matriz de Adjacência--------------------------------------------------------------//
+//-------------------Matriz de Adjacência; vector<bool>------------------------------------------------//
 		
-		int initAdjMatrix(int size){
+		int initAdjMatrixBool(int size){
 			if (size <= 0) return 1;
 			edgeNum = 0;
 			vertexNum = size;
-			AdjMatrix = new vector<bool> [size];
+			AdjMatrixBool = new vector<bool> [size];
 			for (int i = 0; i < size; i++){
-				AdjMatrix[i].resize(size, false);
+				AdjMatrixBool[i].resize(size, false);
 			}
 			vertexDegree = new int [size] ();
 			degrees = new int [size] ();
@@ -107,9 +109,9 @@ class Graph{
 			return 0;
 		}
 
-		void addEdgeMatrix(int v1, int v2){
-			AdjMatrix[v1-1][v2-1] = 1;
-			AdjMatrix[v2-1][v1-1] = 1;
+		void addEdgeMatrixBool(int v1, int v2){
+			AdjMatrixBool[v1-1][v2-1] = 1;
+			AdjMatrixBool[v2-1][v1-1] = 1;
 
 			edgeNum++;
 			
@@ -121,6 +123,39 @@ class Graph{
 			vertexDegree[v1-1]++;
 			vertexDegree[v2-1]++;
 		}
+	
+//-------------------Matriz de Adjacência; boost::dynamic_bitset--------------------------------------//
+
+		int initAdjMatrixSet(int size){
+			if (size <= 0) return 1;
+			edgeNum = 0;
+			vertexNum = size;
+			boost:: dynamic_bitset<> x (size);
+			AdjMatrixSet = new boost::dynamic_bitset<> [size];
+			for (int i = 0; i < size; i++){
+				AdjMatrixSet[i] (x);
+			}
+			vertexDegree = new int [size] ();
+			degrees = new int [size] ();
+			degrees[0] = vertexNum;
+			return 0;
+		}
+
+		void addEdgeMatrixSet(int v1, int v2){
+			AdjMatrixSet[v1-1][v2-1] = 1;
+			AdjMatrixSet[v2-1][v1-1] = 1;
+			
+			edgeNum++;
+
+			degrees[vertexDegree[v1-1]]--;
+			degrees[vertexDegree[v1-1]+1]++;
+			degrees[vertexDegree[v2-1]]--;
+			degrees[vertexDegree[v2-1]+1]++;
+
+			vertexDegree[v1-1]++;
+			vertexDegree[v2-1]++;
+		}
+	
 //--------------Printando informações do Grafo---------------------------------------------------------//
 	
 		void printObj(FILE* file){
@@ -172,13 +207,25 @@ int main(){
 			}
 		}
 		if (a == 2){
-			int x = G.initAdjMatrix(n);
+			int x = G.initAdjMatrixBool(n);
 			printf("Finished initializing.\n");
 			if (x == 1) fprintf(out, "Couldn't create graph.\n");
 			else{
 				int a, b;
 				while (fscanf(in, "%d %d", &a, &b) == 2){
-					G.addEdgeMatrix(a, b);
+					G.addEdgeMatrixBool(a, b);
+				}
+				printf("Finished assigning edges.\n");
+			}
+		}
+		if (a == 3){
+			int x = G.initAdjMatrixSet(n);
+			printf("Finished initializing.\n");
+			if (x == 1) fprintf(out, "Couldn't create graph.\n");
+			else{
+				int a, b;
+				while (fscanf(in, "%d %d", &a, &b) == 2){
+					G.addEdgeMatrixSet(a, b);
 				}
 				printf("Finished assigning edges.\n");
 			}
