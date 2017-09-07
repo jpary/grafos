@@ -82,8 +82,8 @@ class Graph{
 			int size1 = AdjVector[v1-1].size();
 			int size2 = AdjVector[v2-1].size();
 
-			insert(AdjVector[v1-1], v2);
-			insert(AdjVector[v2-1], v1);
+			AdjVector[v1-1].push_back(v2);
+			AdjVector[v2-1].push_back(v1);
 
 			edgeNum++;
 
@@ -169,8 +169,6 @@ class Graph{
 };
 
 int main(){
-	vector<int> v {100, 101, 103, 104};
-	printf("%d\n", insert(v, 102));
 	Graph G;
 	FILE* in;
 	FILE* out;
@@ -182,6 +180,9 @@ int main(){
 	else{
 		int n;
 		fscanf(in, "%d", &n);
+
+		// List
+
 		if (a == 0){
 			int x = G.initAdjList(n);
 			printf("Finished initializing.\n");
@@ -194,6 +195,9 @@ int main(){
 				printf("Finished assigning edges.\n");
 			}
 		}
+
+		// Vector
+
 		if (a == 1){
 			int x = G.initAdjVector(n);
 			printf("Finished initializing.\n");
@@ -206,6 +210,9 @@ int main(){
 				printf("Finished assigning edges.\n");
 			}
 		}
+
+		// Vector<bool>
+
 		if (a == 2){
 			int x = G.initAdjMatrixBool(n);
 			printf("Finished initializing.\n");
@@ -218,6 +225,9 @@ int main(){
 				printf("Finished assigning edges.\n");
 			}
 		}
+
+		// Dynamic_Bitset
+
 		if (a == 3){
 			int x = G.initAdjMatrixSet(n);
 			printf("Finished initializing.\n");
