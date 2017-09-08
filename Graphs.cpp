@@ -5,7 +5,7 @@ Graph* repr(){
 	Graph* G;
 	FILE* in;
 	FILE* out;
-	in = fopen("input.txt", "r");
+	in = fopen("dblp.txt", "r");
 	out = fopen("output.txt", "w");
 	if (!in) fprintf(out, "Could not open file.\n");
 	else{
@@ -22,6 +22,7 @@ Graph* repr(){
 			// Lista Encadeada
 
 			if (a == LINK_LIST){
+				printf("List\n\n");
 				G->initAdjList();
 				printf("Finished initializing.\n");
 				int a, b;
@@ -34,6 +35,7 @@ Graph* repr(){
 			// Vetor
 
 			if (a == VECTOR){
+				printf("Vector\n\n");
 				G->initAdjVector();
 				printf("Finished initializing.\n");
 				int a, b;
@@ -46,6 +48,7 @@ Graph* repr(){
 			// Vector<bool>
 
 			if (a == BOOL_MATRIX){
+				printf("Bool Matrix\n\n");
 				G->initAdjMatrixBool();
 				printf("Finished initializing.\n");
 				int a, b;
@@ -77,8 +80,15 @@ Graph* repr(){
 
 int main(){
 	Graph* grafo = repr();
+	FILE* arq;
+	arq = fopen("vertices.txt", "w");
 	int x;
 	printf("\nEnter the 1st tree's root (the valid interval is [%d, %d]): ", 1, grafo->vertexNum);
 	cin >> x;
 	iterDFS(grafo, x, grafo->vertexNum);
+	fprintf(arq, "Número de Componentes Conexos: %d\n\n", grafo->componentes.size());
+	for (int k = 1; k <= grafo->vertexNum; k++){
+		fprintf(arq, "# %d = Pai: %d; Nível: %d\n", k, grafo->pai[k], grafo->nivel[k]);
+	}
+	printf("Finished printing.\n");
 }
