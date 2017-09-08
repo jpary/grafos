@@ -43,58 +43,57 @@ class Graph{
 		int initEssentials(int size, int x){
 			if (size <= 0) return 1;
 			
-			representation = x;
-			edgeNum = 0; // Nenhuma aresta formada
-			vertexNum = size; // Inicializando número de vértices
+			this->representation = x;
+			this->edgeNum = 0; // Nenhuma aresta formada
+			this->vertexNum = size; // Inicializando número de vértices
 			
-			degrees = new int [size] ();
-			degrees[0] = size;
+			this->degrees = new int [size] ();
+			this->degrees[0] = size;
 			
-			pai = new int[size+1];
-			nivel = new int [size+1];
+			this->pai = new int[size+1];
+			this->nivel = new int [size+1];
 			
 			vector<int> y;
-			componentes.push_back(y);
+			this->componentes.push_back(y);
 
-			pai[0] = -1;
-			nivel[0] = -1;
+			this->pai[0] = -1;
+			this->nivel[0] = -1;
 			
-			descobertos.resize(vertexNum);
-			explorados.resize(vertexNum);
+			this->descobertos.resize(vertexNum);
+			this->explorados.resize(vertexNum);
 			
 			return 0;
 		}
 
-
 //-------------------Lista de Adjacência---------------------------------------------------------------//
 	
 		void initAdjList(){
-			AdjList = new LinkList* [vertexNum];
-			vertexDegree = new int [vertexNum] ();
+			this->AdjList = new LinkList* [vertexNum]();
+			this->vertexDegree = new int [vertexNum]();
 		}
 
 		void addEdgeList(int v1, int v2){
-			LinkList* newItem1 = new LinkList;
-			LinkList* newItem2 = new LinkList;
+			LinkList* newItem1 = new LinkList();
+			LinkList* newItem2 = new LinkList();
 			
 			newItem1->vertex = v2;
 			newItem2->vertex = v1;
 			
-			newItem1->nextVertex = AdjList[v2-1];
-			newItem2->nextVertex = AdjList[v1-1];
+			newItem1->nextVertex = AdjList[v1-1];
+			newItem2->nextVertex = AdjList[v2-1];
 
-			AdjList[v1-1] = newItem1;
-			AdjList[v2-1] = newItem2;
+			this->AdjList[v1-1] = newItem1;
+			this->AdjList[v2-1] = newItem2;
 
-			edgeNum++;
+			this->edgeNum++;
 
-			degrees[vertexDegree[v1-1]]--;
-			degrees[vertexDegree[v1-1]+1]++;
-			degrees[vertexDegree[v2-1]]--;
-			degrees[vertexDegree[v2-1]+1]++;
+			this->degrees[vertexDegree[v1-1]]--;
+			this->degrees[vertexDegree[v1-1]+1]++;
+			this->degrees[vertexDegree[v2-1]]--;
+			this->degrees[vertexDegree[v2-1]+1]++;
 
-			vertexDegree[v1-1]++;
-			vertexDegree[v2-1]++;
+			this->vertexDegree[v1-1]++;
+			this->vertexDegree[v2-1]++;
 		}
 
 //-----------------Vetor de Adjacência-----------------------------------------------------------------//
@@ -108,7 +107,7 @@ class Graph{
 			int size2 = AdjVector[v2-1].size();
 
 			AdjVector[v1-1].push_back(v2);
-			AdjVector[v2-1].push_back(v1);
+			AdjVector[v2-1].push_back(v1); 
 
 			edgeNum++;
 
@@ -141,6 +140,7 @@ class Graph{
 
 			vertexDegree[v1-1]++;
 			vertexDegree[v2-1]++;
+
 		}
 	
 //-------------------Matriz de Adjacência; boost::dynamic_bitset--------------------------------------//
@@ -176,7 +176,7 @@ class Graph{
 			fprintf(file, "# m = %d\n", edgeNum); // Printar número de arestas
 			fprintf(file, "# d_medio = %.10f\n", (float) (2*edgeNum)/vertexNum); //
 			for (int i = 0; i < vertexNum; i++){
-				fprintf(file, "%d %.10f; Pai = %d; Nível = %d\n", i, (float) degrees[i]/vertexNum, pai[i+1], nivel[i+1]);
+				fprintf(file, "%d %.10f\n", i, (float) degrees[i]/vertexNum);
 			}
 		}
 };
