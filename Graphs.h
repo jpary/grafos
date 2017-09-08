@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <vector>
 #include <stdlib.h>
+#include <set>
 // #include <boost/dynamic_bitset.hpp>
 
 using namespace std;
@@ -24,26 +25,43 @@ class Graph{
 		int representation;
 		int* pai;
 		int* nivel;
+		vector<vector<int> > componentes;
+		
 		LinkList** AdjList; // Lista de Adjacência
 		vector<int>* AdjVector; // Vetor de Adjacência
 		vector<bool>* AdjMatrixBool; // Matriz de Adjacência; vector<bool>
 		// boost::dynamic_bitset<>* AdjMatrixSet; // Matriz de Adjacência; boost::dynamic_bitset
+		
 		int vertexNum; // Número de Vértices
 		int edgeNum; // Número de Arestas
 		int* vertexDegree; // Vetor de Grau de Vértices
 		int* degrees; // Vetor Número de Vértices com grau x
+		
+		vector<bool> descobertos;
+		vector<bool> explorados;
 
 		int initEssentials(int size, int x){
 			if (size <= 0) return 1;
+			
 			representation = x;
 			edgeNum = 0; // Nenhuma aresta formada
 			vertexNum = size; // Inicializando número de vértices
+			
 			degrees = new int [size] ();
 			degrees[0] = size;
+			
 			pai = new int[size+1];
 			nivel = new int [size+1];
+			
+			vector<int> y;
+			componentes.push_back(y);
+
 			pai[0] = -1;
 			nivel[0] = -1;
+			
+			descobertos.resize(vertexNum);
+			explorados.resize(vertexNum);
+			
 			return 0;
 		}
 
@@ -158,7 +176,7 @@ class Graph{
 			fprintf(file, "# m = %d\n", edgeNum); // Printar número de arestas
 			fprintf(file, "# d_medio = %.10f\n", (float) (2*edgeNum)/vertexNum); //
 			for (int i = 0; i < vertexNum; i++){
-				fprintf(file, "%d %.10f\n", i, (float) degrees[i]/vertexNum);
+				fprintf(file, "%d %.10f; Pai = %d; Nível = %d\n", i, (float) degrees[i]/vertexNum, pai[i+1], nivel[i+1]);
 			}
 		}
 };
