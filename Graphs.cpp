@@ -1,11 +1,11 @@
 #include "Graphs.h"
-#include "dfs.cpp"
+#include "DFS.cpp"
 
-Graph repr(){
-	Graph G;
+Graph* repr(){
+	Graph* G;
 	FILE* in;
 	FILE* out;
-	in = fopen("dblp.txt", "r");
+	in = fopen("input.txt", "r");
 	out = fopen("output.txt", "w");
 	if (!in) fprintf(out, "Could not open file.\n");
 	else{
@@ -14,18 +14,19 @@ Graph repr(){
 		printf("Please choose one of the 3\nPossible graph representations:\n\n");
 		printf("Adjacency List - 0\nAdjacency Vector - 1\nAdjacency Matrix - 2(not recommended for +250k vertices)\n\n");
 		cin >> a;
-		int x = G.initEssentials(n, a);
+		G = new Graph;
+		int x = G->initEssentials(n, a);
 		if (x) printf("Couldn't create graph.");
 		else{
 		
 			// Lista Encadeada
 
 			if (a == LINK_LIST){
-				G.initAdjList();
+				G->initAdjList();
 				printf("Finished initializing.\n");
 				int a, b;
 				while (fscanf(in, "%d %d", &a, &b) == 2){
-					G.addEdgeList(a, b);
+					G->addEdgeList(a, b);
 				}
 				printf("Finished assigning edges.\n");
 			}
@@ -33,11 +34,11 @@ Graph repr(){
 			// Vetor
 
 			if (a == VECTOR){
-				G.initAdjVector();
+				G->initAdjVector();
 				printf("Finished initializing.\n");
 				int a, b;
 				while (fscanf(in, "%d %d", &a, &b) == 2){
-					G.addEdgeVector(a, b);
+					G->addEdgeVector(a, b);
 				}
 				printf("Finished assigning edges.\n");
 			}
@@ -45,11 +46,11 @@ Graph repr(){
 			// Vector<bool>
 
 			if (a == BOOL_MATRIX){
-				G.initAdjMatrixBool();
+				G->initAdjMatrixBool();
 				printf("Finished initializing.\n");
 				int a, b;
 				while (fscanf(in, "%d %d", &a, &b) == 2){
-					G.addEdgeMatrixBool(a, b);
+					G->addEdgeMatrixBool(a, b);
 				}
 				printf("Finished assigning edges.\n");
 			}
@@ -57,17 +58,17 @@ Graph repr(){
 			// Dynamic_Bitset
 	/*
 			if (a == BITSETM){
-				G.initAdjMatrixSet();
+				G->initAdjMatrixSet();
 				printf("Finished initializing.\n");
 				int a, b;
 				while (fscanf(in, "%d %d", &a, &b) == 2){
-					G.addEdgeMatrixSet(a, b);
+					G->addEdgeMatrixSet(a, b);
 				}
 				printf("Finished assigning edges.\n");
 			}*/
 		}
 	}
-	G.printObj(out);
+	G->printObj(out);
 	printf("Finished printing.\n");
 	fclose(in);
 	fclose(out);
@@ -75,6 +76,9 @@ Graph repr(){
 }
 
 int main(){
-	Graph grafo = repr();
-	iterDFS(grafo, 1);
+	Graph* grafo = repr();
+	int x;
+	printf("\nEnter the 1st tree's root (the valid interval is [%d, %d]): ", 1, grafo->vertexNum);
+	cin >> x;
+	iterDFS(grafo, x, grafo->vertexNum);
 }
