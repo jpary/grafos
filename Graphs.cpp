@@ -1,18 +1,20 @@
 #include "Graphs.h"
-#include "DFS.cpp"
+#include "HeapFunctions.h"
+#include "DFS.h"
+#include "BFS.h"
 
 Graph* repr(){
 	Graph* G;
 	FILE* in;
 	FILE* out;
-	in = fopen("dblp.txt", "r");
+	in = fopen("subdblp.txt", "r");
 	out = fopen("output.txt", "w");
 	if (!in) fprintf(out, "Could not open file.\n");
 	else{
 		int n, a;
 		fscanf(in, "%d", &n);
 		printf("Please choose one of the 3\nPossible graph representations:\n\n");
-		printf("Adjacency List - 0\nAdjacency Vector - 1\nAdjacency Matrix - 2(not recommended for +250k vertices)\n\n");
+		printf("Adjacency List - 0\nAdjacency Vector - 1\nAdjacency Matrix - 2 (not recommended for +250k vertices)\n\n");
 		cin >> a;
 		G = new Graph;
 		int x = G->initEssentials(n, a);
@@ -57,18 +59,6 @@ Graph* repr(){
 				}
 				printf("Finished assigning edges.\n");
 			}
-
-			// Dynamic_Bitset
-	/*
-			if (a == BITSETM){
-				G->initAdjMatrixSet();
-				printf("Finished initializing.\n");
-				int a, b;
-				while (fscanf(in, "%d %d", &a, &b) == 2){
-					G->addEdgeMatrixSet(a, b);
-				}
-				printf("Finished assigning edges.\n");
-			}*/
 		}
 	}
 	G->printObj(out);
@@ -82,19 +72,25 @@ int main(){
 	Graph* grafo = repr();
 	FILE* arq1;
 	arq1 = fopen("vertices.txt", "w");
-	int x;
+	
+	int search;
+	printf("\nWhich search method would you like?\n\n");
+	printf("BFS (Breadth-First Search) - 0\nDFS (Depth-First Search) - 1\n\n");
+	cin >> search;
+	int root;
 	printf("\nEnter the 1st tree's root (the valid interval is [%d, %d]): ", 1, grafo->vertexNum);
-	cin >> x;
+	cin >> root;
 	
 	FILE* arq2;
 	arq2 = fopen("components.txt", "w");
 	fclose(arq2);
 	
 	int* a = new int (1);
-	int* b = new int (grafo->vertexNum);
-	while (*b > 0){
-		iterDFS(grafo, &(x), b, arq2, a);
-		printf("%d\n", *b);
+	int* tamanho = new int (grafo->vertexNum);
+	while (*tamanho > 0){
+		if (search == 0) BFS(grafo, &root, tamanho, arq2, a);
+		if (search == 1) iterDFS(grafo, &root, tamanho, arq2, a);
+		printf("%d\n", *tamanho);
 	}
 
 	fprintf(arq1, "Número de Componentes Conexos: %d\n\n", *a);
