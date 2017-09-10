@@ -89,7 +89,7 @@ int main(){
 	int* tamanho = new int (grafo->vertexNum);
 	while (*tamanho > 0){
 		if (search == 0) BFS(grafo, &root, tamanho, arq2, a);
-		if (search == 1) iterDFS(grafo, &root, tamanho, arq2, a);
+		if (search == 1) DFS(grafo, &root, tamanho, arq2, a);
 		printf("%d\n", *tamanho);
 	}
 
