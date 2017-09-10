@@ -64,12 +64,13 @@ void DFS(Graph* grafo, int *raiz, int *size, FILE* file, int* number){
 			printf("Swapped.\n");
 			
 			file = fopen("components.txt", "a");
-			fprintf(file, "Componente Conexo #%d; Qtd. de Vértices: %d\n[", *number, biggest.size());
+			fprintf(file, "Componente Conexo #%d; Qtd. de Vértices: %d\n[", *number, (int) biggest.size());
 			
 			(*number)++;
+			int i = 0;
 			
-			for (int i = 0; i < biggest.size()-1; i++) fprintf(file, "%d, ", biggest[i]);
-			fprintf(file, "%d]\n\n");
+			for (; i < biggest.size()-1; i++) fprintf(file, "%d, ", biggest[i]);
+			fprintf(file, "%d]\n\n", biggest[i]);
 			
 			fclose(file);
 			printf("Cleared memory.\n");
