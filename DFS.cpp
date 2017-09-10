@@ -1,21 +1,21 @@
 #include <stack>
+#include "HeapFunctions.cpp"
 
-void iterDFS(Graph* grafo, int raiz, int size){
+void iterDFS(Graph* grafo, int *raiz, int *size, FILE* file, int* number){
 	stack<int> pilha;
-	int index = grafo->componentes.size()-1;
+	vector<int> vetor;
 
 	int level = 0;
 	int father = 0;
 
-	pilha.push(raiz);
+	pilha.push(*raiz);
 	int x;
-
 	while (pilha.size() > 0){
 		x = pilha.top();
 		grafo->pai[x] = father;
 		grafo->nivel[x] = level;
 		grafo->descobertos[x-1] = 1;
-		grafo->componentes[index].push_back(x);
+		vetor.push_back(x);
 
 		if (grafo->representation == LINK_LIST){
 			LinkList* p = new LinkList();
@@ -50,15 +50,28 @@ void iterDFS(Graph* grafo, int raiz, int size){
 		}
 	}
 
-	int steps = grafo->componentes[index].size();
+	int steps = vetor.size();
+	heapInsert(&(grafo->componentes), vetor);
 
-	if (steps < size){
+	if (steps <= *size){
+		while (grafo->componentes.size() > 0 && grafo->componentes[0].size() > (*size)-steps){
+			vector<int> biggest;
+			heapRemove(grafo, (&biggest));
+			printf("Swapped.\n");
+			file = fopen("components.txt", "a");
+			fprintf(file, "Componente Conexo #%d; Qtd. de Vértices: %d\n[", *number, biggest.size());
+			(*number)++;
+			for (int i = 0; i < biggest.size()-1; i++) fprintf(file, "%d, ", biggest[i]);
+			fprintf(file, "%d]\n\n");
+			fclose(file);
+			printf("Cleared memory.\n");
+		}
+		if (steps == *size) (*number)--;
+		*size -= steps;
 		int i = 0;
 		while (grafo->descobertos[i] & 1) i++;
-		vector<int> y;
-		grafo->componentes.push_back(y);
-		
-		iterDFS(grafo, i+1, size-steps);
+		*raiz = i+1;
+		return;
 	}
 }
 
