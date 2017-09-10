@@ -78,9 +78,10 @@ void BFS(Graph* grafo, int* raiz, int* size, FILE* file, int* number){
 			fprintf(file, "Componente Conexo #%d; Qtd. de Vértices: %d\n[", *number, biggest.size());
 			
 			(*number)++;
-			
-			for (int i = 0; i < biggest.size()-1; i++) fprintf(file, "%d, ", biggest[i]);
-			fprintf(file, "%d]\n\n");
+			int i = 0;
+
+			for (; i < biggest.size()-1; i++) fprintf(file, "%d, ", biggest[i]);
+			fprintf(file, "%d]\n\n", biggest[i]);
 			
 			fclose(file);
 			printf("Cleared memory.\n");
