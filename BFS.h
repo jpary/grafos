@@ -75,7 +75,7 @@ void BFS(Graph* grafo, int* raiz, int* size, FILE* file, int* number){
 			printf("Swapped.\n");
 			
 			file = fopen("components.txt", "a");
-			fprintf(file, "Componente Conexo #%d; Qtd. de Vértices: %d\n[", *number, biggest.size());
+			fprintf(file, "Componente Conexo #%d; Qtd. de Vértices: %d\n[", *number, (int) biggest.size());
 			
 			(*number)++;
 			int i = 0;
