@@ -53,9 +53,6 @@ class Graph{
 			this->pai = new int[size+1];
 			this->nivel = new int [size+1];
 			
-			vector<int> y;
-			this->componentes.push_back(y);
-
 			this->pai[0] = -1;
 			this->nivel[0] = -1;
 			
@@ -94,6 +91,15 @@ class Graph{
 
 			this->vertexDegree[v1-1]++;
 			this->vertexDegree[v2-1]++;
+		}
+
+		void componentRemover(){
+			int index = this->componentes.size()-1;
+			printf("%d\n", this->componentes[index].size());
+			vector<int>::iterator inicio = this->componentes[index].begin();
+			vector<int>::iterator fim = this->componentes[index].end();
+			this->componentes[index-1].erase(inicio, fim);
+			this->componentes.pop_back();
 		}
 
 //-----------------Vetor de Adjacência-----------------------------------------------------------------//
