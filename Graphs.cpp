@@ -80,15 +80,26 @@ Graph* repr(){
 
 int main(){
 	Graph* grafo = repr();
-	FILE* arq;
-	arq = fopen("vertices.txt", "w");
+	FILE* arq1;
+	arq1 = fopen("vertices.txt", "w");
 	int x;
 	printf("\nEnter the 1st tree's root (the valid interval is [%d, %d]): ", 1, grafo->vertexNum);
 	cin >> x;
-	iterDFS(grafo, x, grafo->vertexNum);
-	fprintf(arq, "Número de Componentes Conexos: %d\n\n", grafo->componentes.size());
+	
+	FILE* arq2;
+	arq2 = fopen("components.txt", "w");
+	fclose(arq2);
+	
+	int* a = new int (1);
+	int* b = new int (grafo->vertexNum);
+	while (*b > 0){
+		iterDFS(grafo, &(x), b, arq2, a);
+		printf("%d\n", *b);
+	}
+
+	fprintf(arq1, "Número de Componentes Conexos: %d\n\n", *a);
 	for (int k = 1; k <= grafo->vertexNum; k++){
-		fprintf(arq, "# %d = Pai: %d; Nível: %d\n", k, grafo->pai[k], grafo->nivel[k]);
+		fprintf(arq1, "# %d = Pai: %d; Nível: %d\n", k, grafo->pai[k], grafo->nivel[k]);
 	}
 	printf("Finished printing.\n");
 }
