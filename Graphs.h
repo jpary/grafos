@@ -135,7 +135,7 @@ class Graph{
 			this->vertexDegree[v2-1]++;
 
 		}
-
+	
 //-----------------Funções Adicionais-----------------------------------------------------------------//
 	
 		void componentRemover(){
