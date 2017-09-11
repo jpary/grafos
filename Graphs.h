@@ -36,6 +36,8 @@ class Graph{
 		vector<bool> descobertos;
 		vector<bool> explorados;
 
+		int diametro;
+
 		int initEssentials(int size, int x){
 			if (size <= 0) return 1;
 			
@@ -55,6 +57,8 @@ class Graph{
 			this->descobertos.resize(vertexNum);
 			this->explorados.resize(vertexNum);
 			
+			this->diametro = 0;
+
 			return 0;
 		}
 
