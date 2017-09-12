@@ -153,9 +153,22 @@ class Graph{
 		void printObj(FILE* file){
 			fprintf(file, "# n = %d\n", vertexNum); // Printar número de vértices
 			fprintf(file, "# m = %d\n", edgeNum); // Printar número de arestas
-			fprintf(file, "# d_medio = %.10f\n", (float) (2*edgeNum)/vertexNum); //
+			fprintf(file, "# d_medio = %.10f\n", (float) (2*edgeNum)/vertexNum);
+			int maior = 0;
+			int c = 0;
+			int menor = 0;
 			for (int i = 0; i < vertexNum; i++){
-				fprintf(file, "%d %.10f\n", i, (float) degrees[i]/vertexNum);
+				if (degrees[i] == 0) fprintf(file, "%d	%d\n", i, 0);
+				else{
+					if (c == 0){
+						menor = i;
+						c = 1;
+					}
+					fprintf(file, "%d	%.20f\n", i, (float) degrees[i]/vertexNum);	
+					maior = i;
+				}
 			}
+			fprintf(file, "\nMenor Grau: %d\n", menor);
+			fprintf(file, "Maior Grau: %d", maior);	
 		}
 };
