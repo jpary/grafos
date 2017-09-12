@@ -121,7 +121,9 @@ void diameter(Graph* grafo, int size, FILE* file, int* number){
 	int level = 0;
 	for (int i = 1; i <= size; i++){
 		level = BFS(grafo, &i, &size, file, number, 0, 1);
+		printf("%d\n", i);
 		if (grafo->diametro < level) grafo->diametro = level;
+		printf("%d\n", grafo->diametro);
 	}
 	printf("%d\n", grafo->diametro);
 }
