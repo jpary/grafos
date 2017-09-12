@@ -6,19 +6,26 @@
 
 Graph* repr(){
 	Graph* G;
+	
 	FILE* in;
 	FILE* out;
-	in = fopen("subdblp.txt", "r");
+	
+	in = fopen("dblp.txt", "r");
 	out = fopen("output.txt", "w");
+	
 	if (!in) fprintf(out, "Could not open file.\n");
 	else{
 		int n, a;
 		fscanf(in, "%d", &n);
+		
 		printf("Please choose one of the 3\nPossible graph representations:\n\n");
 		printf("Adjacency List - 0\nAdjacency Vector - 1\nAdjacency Matrix - 2 (not recommended for +250k vertices)\n\n");
+		
 		cin >> a;
+		
 		G = new Graph;
 		int x = G->initEssentials(n, a);
+		
 		if (x) printf("Couldn't create graph.");
 		else{
 		
@@ -96,12 +103,13 @@ int main(){
 		printf("\nEnter the 1st tree's root (the valid interval is [%d, %d]): ", 1, grafo->vertexNum);
 		cin >> root;
 		printf("\n");
-		
+
 		int d;
-		printf("Would you like to do a single %s - 0\nOr calculate all of its components? - 1\n\n", s.c_str());
+		printf("\nWould you like to do a single %s - 0\nOr calculate all of its components? - 1\n\n", s.c_str());
 		cin >> d;
 		
 		if (d == 1){
+			
 			while (*tamanho > 0){
 				if (search == 0) BFS(grafo, &root, tamanho, arq2, a, d, 0);
 				if (search == 1) DFS(grafo, &root, tamanho, arq2, a, d);
@@ -112,8 +120,8 @@ int main(){
 
 		if (d == 0){
 			if (search == 0) BFS(grafo, &root, tamanho, arq2, a, d, 0);
-			if (search == 1) DFS(grafo, &root, tamanho, arq2, a, d);	
-		}
+			if (search == 1) DFS(grafo, &root, tamanho, arq2, a, d);
+		}	
 
 		for (int k = 1; k <= grafo->vertexNum; k++){
 			if (grafo->descobertos[k-1] == 1) fprintf(arq1, "# %d = Pai: %d; Nível: %d\n", k, grafo->pai[k], grafo->nivel[k]);
