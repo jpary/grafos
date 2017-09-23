@@ -37,7 +37,7 @@ void dijkstra(Graph* grafo, FILE* file, int raiz){
 					grafo->pai[son] = x;
 					grafo->nivel[son] = grafo->nivel[x]+1;
 					dist[son-1] = dist[x-1] + weight;
-					heapifyBottomUp(&heap, &distance, pos[son-1])
+					heapifyBottomUp(&heap, &distance, &pos, pos[son-1]);
 				}
 				p = p->nextVertex;
 			}
@@ -53,7 +53,7 @@ void dijkstra(Graph* grafo, FILE* file, int raiz){
 					grafo->pai[son] = x;
 					grafo->nivel[son] = grafo->nivel[x]+1;
 					dist[son-1] = dist[x-1] + weight;
-					heapifyBottomUp(&heap, &distance, pos[son-1])
+					heapifyBottomUp(&heap, &distance, &pos, pos[son-1]);
 				}
 			}
 		}
@@ -65,7 +65,7 @@ void dijkstra(Graph* grafo, FILE* file, int raiz){
 					grafo->pai[i+1] = x;
 					grafo->nivel[i+1] = grafo->nivel[x]+1;
 					dist[i] = dist[x-1] + weight;
-					heapifyBottomUp(&heap, &distance, pos[i])
+					heapifyBottomUp(&heap, &distance, &pos, pos[i]);
 				}
 			}
 		}
