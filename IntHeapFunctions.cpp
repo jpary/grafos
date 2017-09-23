@@ -4,56 +4,58 @@
 
 using namespace std;
 
-void swap(vector<int>* vec, int index1, int index2){
+void intSwap(vector<int>* vec, int index1, int index2){
 	int temp = (*vec)[index1];
 	(*vec)[index1] = (*vec)[index2];
 	(*vec)[index2] = temp;
 }
 
-void heapifyBottomUp(vector<int>* heap, vector<int>* dist, vector<int>* pos, int son){
+void intHeapifyBottomUp(vector<int>* heap, vector<float>* dist, vector<int>* pos, int son){
+	if (son == 0) return;
+	
 	int father;
 	if (son % 2 == 1) father = (son-1)/2;
 	else father = (son-2)/2;
 
-	if (dist[(*heap)[son]-1] != INF && dist[(*heap)[son]-1] < dist[(*heap)[father]-1]){
-		swap(heap, father, son);
-		swap(pos, (*heap)[father], (*heap)[son]);
-		heapifyBottomUp(heap, dist, pos, father);
+	if ((*dist)[(*heap)[son]] < (*dist)[(*heap)[father]]){
+
+		intSwap(heap, father, son);
+		intSwap(pos, (*heap)[father], (*heap)[son]);
+		intHeapifyBottomUp(heap, dist, pos, father);
 	}
 }
 
-void heapifyTopDown(vector<int>* heap, vector<int>* dist, vector<int>* pos, int root){
+void intHeapifyTopDown(vector<int>* heap, vector<float>* dist, vector<int>* pos, int root){
 	int smallest = root;
 	int leftSon = 2*root+1;
 	int rightSon = 2*root+2;
 
-	if (leftSon < heap->size() && dist[(*heap)[leftSon]-1] != INF && dist[(*heap)[leftSon]-1] < dist[(*heap)[smallest]-1]) smallest = leftSon;
-	if (rightSon < heap->size() && dist[(*heap)[rightSon]-1] != INF && dist[(*heap)[rightSon]-1] < dist[(*heap)[smallest]-1]) smallest = rightSon;
+	if (leftSon < heap->size() && (*dist)[(*heap)[leftSon]] < (*dist)[(*heap)[smallest]]) smallest = leftSon;
+	if (rightSon < heap->size() && (*dist)[(*heap)[rightSon]] < (*dist)[(*heap)[smallest]]) smallest = rightSon;
 
 	if (smallest != root){
-		swap(heap, smallest, root);
-		swap(pos, (*heap)[smallest], (*heap)[root])
-		heapifyTopDown(heap, dist, pos, smallest);
+		intSwap(heap, smallest, root);
+		intSwap(pos, (*heap)[smallest], (*heap)[root]);
+		intHeapifyTopDown(heap, dist, pos, smallest);
 	}
 }
 
-void heapInsert(vector<int>* heap, vector<int>* dist, vector<int>* pos, int vertex){
+void intHeapInsert(vector<int>* heap, vector<float>* dist, vector<int>* pos, int vertex){
 	int index = heap->size();
 	heap->push_back(vertex);
 	pos->push_back(vertex);
-	if (index != 0) heapifyBottomUp(heap, dist, pos, index);
+	if (index != 0) intHeapifyBottomUp(heap, dist, pos, index);
 }
 
-void heapRemove(vector<int>* heap, vector<int>* dist, vector<int>* pos){
-	int index = grafo->componentes.size()-1;
+void intHeapRemove(vector<int>* heap, vector<float>* dist, vector<int>* pos){
+	int index = heap->size()-1;
 	if (index < 0) return;
-	vector<int> temp = new vector<int> ();
-
-	swap(heap, index, 0);
-	swap(pos, (*heap)[index], (*heap)[0]);
+	vector<int> temp;
+	intSwap(heap, index, 0);
+	intSwap(pos, (*heap)[index], (*heap)[0]);
 	heap->swap(temp);
 	temp.pop_back();
 	temp.swap(*heap);
 
-	heapifyTopDown(heap, dist, pos, 0);
+	intHeapifyTopDown(heap, dist, pos, 0);
 }
