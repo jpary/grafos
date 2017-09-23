@@ -1,16 +1,28 @@
-#include "Graphs.h"
-#include "HeapFunctions.h"
-#include "DFS.h"
-#include "BFS.h"
+#include "WeightGraph.h"
+#include "IntHeapFunctions.h"
+#include "Dijkstra.h"
 #include <string>
 
 WeightGraph* repr(){
+	
 	WeightGraph* G;
 	
 	FILE* in;
 	FILE* out;
-	
-	in = fopen("dblp.txt", "r");
+	string s;
+	printf("\nEnter .txt filename:");
+	cin >> s;
+	string str = s+".txt";
+	in = fopen(str.c_str(), "r");
+
+	while(!in){
+		printf("\nNo file found\n");
+		printf("\nEnter .txt filename:");
+		cin >> s;
+		string str = s+".txt";
+		in = fopen(str.c_str(), "r");
+	}
+
 	out = fopen("output.txt", "w");
 	
 	if (!in) fprintf(out, "Could not open file.\n");
@@ -18,7 +30,7 @@ WeightGraph* repr(){
 		int n, a;
 		fscanf(in, "%d", &n);
 		
-		printf("Please choose one of the 3\nPossible graph representations:\n\n");
+		printf("\nPlease choose one of the 3\nPossible graph representations:\n\n");
 		printf("Adjacency List - 0\nAdjacency Vector - 1\nAdjacency Matrix - 2 (not recommended for +250k vertices)\n\n");
 		
 		cin >> a;
@@ -80,6 +92,7 @@ WeightGraph* repr(){
 }
 
 int main(){
+	
 	WeightGraph* grafo = repr();
 	FILE* arq1;
 	arq1 = fopen("vertices.txt", "w");
@@ -89,25 +102,16 @@ int main(){
 	printf("Dijkstra - 0\nPrim - 1\nKruskal - 2\n\n");
 	cin >> search;
 
-	FILE* arq2;
-	arq2 = fopen("components.txt", "w");
-	fclose(arq2);
-
-	int* a = new int (1);
-		
-	int* tamanho = new int (grafo->vertexNum);
-		
-		int root;
-		printf("\nEnter the 1st tree's root (the valid interval is [%d, %d]): ", 1, grafo->vertexNum);
-		cin >> root;
-		printf("\n");
-
-		//Aqui entra Dijkstra/Prim
-		//Usar int search.
-
-		for (int k = 1; k <= grafo->vertexNum; k++){
-			if (grafo->descobertos[k-1] == 1) fprintf(arq1, "# %d = Pai: %d; Nível: %d\n", k, grafo->pai[k], grafo->nivel[k]);
-		}
-		printf("Finished printing.\n");
+	if (grafo->dijkstra == 0 && search == 0){
+		printf("Cannot calculate Dijkstra because of negative edge weights.\n");
+		return 1;
 	}
+
+	int root;
+	printf("\nEnter the 1st tree's root (the valid interval is [%d, %d]): ", 1, grafo->vertexNum);
+	cin >> root;
+	printf("\n");
+
+	if (search == 0 && grafo->dijkstra == true) dijkstra(grafo, arq1, root);
+	return 0;
 }
