@@ -24,10 +24,10 @@ class WeightGraph{
 	
 	public:
 
+		bool dijkstra;
 		int representation;
 		int* pai;
 		int* nivel;
-		vector<vector<int> > componentes;
 		
 		LinkList** AdjList; // Lista de Adjacência
 		vector<VectorElem>* AdjVector; // Vetor de Adjacência
@@ -59,9 +59,9 @@ class WeightGraph{
 			this->nivel[0] = -1;
 			
 			this->descobertos.resize(vertexNum);
-			this->explorados.resize(vertexNum);
+			this->distancias.resize(vertexNum);
 			
-			this->diametro = 0;
+			this->dijkstra = true;
 
 			return 0;
 		}
@@ -74,6 +74,8 @@ class WeightGraph{
 		}
 
 		void addEdgeList(int v1, int v2, float w){
+			if (w < 0) this->dijkstra = false;
+
 			LinkList* newItem1 = new LinkList();
 			LinkList* newItem2 = new LinkList();
 			
@@ -107,6 +109,8 @@ class WeightGraph{
 		}
 
 		void addEdgeVector(int v1, int v2, float w){
+			if (w < 0) this->dijkstra = false;
+
 			VectorElem e1;
 			VectorElem e2;
 
@@ -141,6 +145,8 @@ class WeightGraph{
 		}
 
 		void addEdgeMatrixBool(int v1, int v2, float w){
+			if (w < 0) this->dijkstra = false;
+
 			this->AdjMatrix[v1-1][v2-1] = w;
 			this->AdjMatrix[v2-1][v1-1] = w;
 
