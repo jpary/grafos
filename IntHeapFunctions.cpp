@@ -37,21 +37,23 @@ void heapifyTopDown(vector<int>* heap, vector<int>* dist, vector<int>* pos, int 
 	}
 }
 
-void heapInsert(vector<int>* vec, vector<int>* dist, int vertex){
-	int index = vec->size();
-	vec->push_back(vertex);
-	if (index != 0) heapifyBottomUp(vec, dist, index);
+void heapInsert(vector<int>* heap, vector<int>* dist, vector<int>* pos, int vertex){
+	int index = heap->size();
+	heap->push_back(vertex);
+	pos->push_back(vertex);
+	if (index != 0) heapifyBottomUp(heap, dist, pos, index);
 }
 
-void heapRemove(vector<int>* vec, int* dist){
+void heapRemove(vector<int>* heap, vector<int>* dist, vector<int>* pos){
 	int index = grafo->componentes.size()-1;
 	if (index < 0) return;
 	vector<int> temp = new vector<int> ();
 
-	swap(vec, index, 0);
-	vec->swap(temp);
+	swap(heap, index, 0);
+	swap(pos, (*heap)[index], (*heap)[0]);
+	heap->swap(temp);
 	temp.pop_back();
-	temp.swap(*vec);
+	temp.swap(*heap);
 
-	heapifyTopDown(vec, dist, 0);
+	heapifyTopDown(heap, dist, pos, 0);
 }
