@@ -1,6 +1,6 @@
 #define INF -1;
 
-void dijkstra(Graph* grafo, int raiz){
+void dijkstra(Graph* grafo, FILE* file, int raiz){
 	vector<int> dist = new vector<int> ();
 	vector<int> pos = new vector<int> ();
 	vector<int> heap = new vector<int> ();
@@ -12,12 +12,19 @@ void dijkstra(Graph* grafo, int raiz){
 	}
 
 	dist[raiz-1] = 0.0;
+	grafo->pai[raiz] = 0;
+	grafo->nivel[raiz] = 0;
 	swap(&heap, raiz-1, 0);
 	swap(&pos, raiz-1, 0);
 
 	if (!heap.empty()){
 		int x = heap[0];
-		heapRemove(&heap, dist);
+		if (dist[x-1] == INF){
+			dist[x-1] = 0.0;
+			grafo->pai[x] = 0;
+			grafo->nivel[x] = 0;
+		}
+		heapRemove(&heap, &dist, &pos);
 
 		if (grafo->representation == LINK_LIST){
 			LinkList* p = new LinkList();
@@ -62,5 +69,6 @@ void dijkstra(Graph* grafo, int raiz){
 				}
 			}
 		}
+
 	}
 }
