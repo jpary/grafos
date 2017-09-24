@@ -2,8 +2,11 @@
 #include <stdio.h>
 #include <vector>
 #include <stdlib.h>
+#include <limits>
 
 using namespace std;
+
+static float inf = numeric_limits<float>::infinity();
 
 #define LINK_LIST 0
 #define VECTOR 1
@@ -164,18 +167,10 @@ class WeightGraph{
 	
 //-----------------Funções Adicionais-----------------------------------------------------------------//
 	
-		void componentRemover(){
-			int index = this->componentes.size()-1;
-			vector<int>::iterator inicio = this->componentes[index].begin();
-			vector<int>::iterator fim = this->componentes[index].end();
-			this->componentes[index-1].erase(inicio, fim);
-			this->componentes.pop_back();
-		}
-
 		void printObj(FILE* file){
 			fprintf(file, "# n = %d\n", vertexNum); // Printar número de vértices
 			fprintf(file, "# m = %d\n", edgeNum); // Printar número de arestas
-			fprintf(file, "# d_medio = %.10f\n", (float) (2*edgeNum)/vertexNum);
+			fprintf(file, "# d_medio = %.10f\n\n", (float) (2*edgeNum)/vertexNum);
 			int maior = 0;
 			int c = 0;
 			int menor = 0;
