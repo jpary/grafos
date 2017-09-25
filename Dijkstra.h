@@ -93,6 +93,8 @@ void dijkstra(WeightGraph* grafo, FILE* file, int raiz){
 	fprintf(file, "\nDistância Média = %.10f", sum/total);
 }
 
+// Código para fazer:
+
 void meanDistance(WeightGraph* grafo, FILE* file){
 	for (int i = 1; i <= grafo->vertexNum; i++){
 	}
