@@ -99,7 +99,7 @@ int main(){
 	
 	int search;
 	printf("\nWhich search method would you like?\n\n");
-	printf("Dijkstra - 0\nPrim - 1\nKruskal - 2\n\n");
+	printf("Dijkstra - 0\nPrim - 1\n\n");
 	cin >> search;
 
 	if (grafo->dijkstra == 0 && search == 0){
