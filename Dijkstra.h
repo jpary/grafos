@@ -1,11 +1,19 @@
-void dijkstra(WeightGraph* grafo, FILE* file, int raiz){
-	
+void reversePrint(FILE* file, int* array, int a){
+	if (a == 0)	return;
+	reversePrint(file, array, array[a]);
+	fprintf(file, "%d, ", a);
+}
+
+float dijkstra(WeightGraph* grafo, FILE* file, int raiz, bool avg, int min){
+
 	vector<float> dist;
 	vector<int> pos;
 	vector<int> heap;
-	int componentes = 0;
-
+	
 	// 3 vetores de tamanho (N+1);
+	
+	vector<int> componentes;
+	int comp = 0;
 
 	dist.push_back(-1);
 	pos.push_back(-1);
@@ -17,22 +25,26 @@ void dijkstra(WeightGraph* grafo, FILE* file, int raiz){
 	}
 
 	grafo->pai[raiz] = 0;
-	grafo->nivel[raiz] = 0;
 	dist[raiz] = 0.0;
 	intSwap(&heap, raiz-1, 0);
 	intSwap(&pos, raiz, 1);
-	componentes++;
+	grafo->descobertos[raiz-1] = 1;
+	comp++;
 
 	while (!heap.empty()){ // usar "&& dist[heap[0]] != inf para calcular apenas uma dijkstra para um componente"
 		int x = heap[0];
 
 		if (dist[x] == inf){
+			
+			if (avg) break;
+
 			dist[x] = 0.0;
 			grafo->pai[x] = 0;
-			grafo->nivel[x] = 0;
-			componentes++;
+			grafo->descobertos[x-1] = 1;
+			comp++;
 		}
 
+		if (avg && grafo->descobertos[x-1] == 0) componentes.push_back(x);
 		intHeapRemove(&heap, &dist, &pos);
 
 		if (grafo->representation == LINK_LIST){
@@ -44,7 +56,6 @@ void dijkstra(WeightGraph* grafo, FILE* file, int raiz){
 
 				if (dist[son] > dist[x] + weight){
 					grafo->pai[son] = x;
-					grafo->nivel[son] = grafo->nivel[x]+1;
 					dist[son] = dist[x] + weight;
 					intHeapifyBottomUp(&heap, &dist, &pos, pos[son]);
 				}
@@ -60,7 +71,6 @@ void dijkstra(WeightGraph* grafo, FILE* file, int raiz){
 				
 				if (dist[son] > dist[x] + weight){
 					grafo->pai[son] = x;
-					grafo->nivel[son] = grafo->nivel[x]+1;
 					dist[son] = dist[x] + weight;
 					intHeapifyBottomUp(&heap, &dist, &pos, pos[son]);
 				}
@@ -69,33 +79,58 @@ void dijkstra(WeightGraph* grafo, FILE* file, int raiz){
 
 		if (grafo->representation == MATRIX){
 			for (int i = 0; i < grafo->vertexNum; i++){
-				
 				if (dist[i+1] > dist[x] + grafo->AdjMatrix[x-1][i]){
 					grafo->pai[i+1] = x;
-					grafo->nivel[i+1] = grafo->nivel[x]+1;
-					dist[i+1] > dist[x] + grafo->AdjMatrix[x-1][i];
+					dist[i+1] = dist[x] + grafo->AdjMatrix[x-1][i];
 					intHeapifyBottomUp(&heap, &dist, &pos, pos[i+1]);
 				}
 			}
 		}
 	}
 
-	grafo->descobertos[raiz-1] = 1;
-	float sum = 0.0;
-	fprintf(file, "Número de componentes:	%d\n\n", componentes);
-	for (int j = 1; j <= grafo->vertexNum; j++){
-		if (grafo->descobertos[j-1] == 0) sum += dist[j];
-		if (sum < 0) printf("hey\n");
-		if (dist[j] == inf) fprintf(file, "# %d:	Pai = -1;	Nivel = -1;	Distância = inf;\n", j);
-		else fprintf(file, "# %d:	Pai = %d;	Nivel = %d;	Distância = %.8f;\n", j, grafo->pai[j], grafo->nivel[j], dist[j]);
+	if (avg){
+		float sum = 0.0;
+		for (int j = 0; j < componentes.size(); j++){
+			if (grafo->descobertos[componentes[j]-1] == 0) sum += dist[componentes[j]];
+		}
+		float vNum = (float) grafo->vertexNum;
+		float total = (vNum*(vNum-1))/2;
+		return sum/total;
 	}
-	float total = (grafo->vertexNum*(grafo->vertexNum-1))/2;
-	fprintf(file, "\nDistância Média = %.10f", sum/total);
+
+	else{	
+		if (min != 0){
+			if (dist[min] == inf) fprintf(file, "# %d:	Distância = infinita;	Não existe caminho mínimo entre %d e %d\n", min, raiz, min);
+			else{
+				fprintf(file, "# %d:	Distância = %.10f;	Caminho Mínimo = ", min, dist[min]);
+				fprintf(file, "[");
+				reversePrint(file, grafo->pai, grafo->pai[min]);
+				fprintf(file, "%d]\n", min);		
+			}
+		}
+
+		else{
+			fprintf(file, "Número de componentes:	%d\n\n", comp);
+			for (int j = 1; j <= grafo->vertexNum; j++){
+				if (dist[j] == inf) fprintf(file, "# %d:	Distância = infinita;	Não existe caminho mínimo entre %d e %d\n", j, raiz, j);
+				else{
+					fprintf(file, "# %d:	Distância = %.10f;	Caminho Mínimo = ", j, dist[j]);
+					fprintf(file, "[");
+					reversePrint(file, grafo->pai, grafo->pai[j]);
+					fprintf(file, "%d]\n", j);
+				}
+			}	
+		}
+		return 0.0;
+	}
 }
 
-// Código para fazer:
 
-void meanDistance(WeightGraph* grafo, FILE* file){
-	for (int i = 1; i <= grafo->vertexNum; i++){
-	}
+void avgDistance(WeightGraph* grafo, FILE* file){
+	double mean = 0.0;
+	
+	for (int i = 1; i < grafo->vertexNum; i++) mean += (double) dijkstra(grafo, file, i, true, 0);
+	
+	printf("\nAverage Distance: %.10f\n\n", mean);
+	fprintf(file, "Distância Média:	%.10f\n", mean);
 }
