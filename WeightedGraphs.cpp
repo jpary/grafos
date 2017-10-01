@@ -1,7 +1,29 @@
 #include "WeightGraph.h"
 #include "IntHeapFunctions.h"
 #include "Dijkstra.h"
+#include "Prim.h"
 #include <string>
+#include <windows.h>
+
+double PCFreq = 0.0;
+__int64 CounterStart = 0;
+
+void StartCounter(){
+    LARGE_INTEGER li;
+    if(!QueryPerformanceFrequency(&li))
+    cout << "QueryPerformanceFrequency failed!\n";
+
+    PCFreq = double(li.QuadPart)/1.0;
+
+    QueryPerformanceCounter(&li);
+    CounterStart = li.QuadPart;
+}
+
+double GetCounter(){
+    LARGE_INTEGER li;
+    QueryPerformanceCounter(&li);
+    return double(li.QuadPart-CounterStart)/PCFreq;
+}
 
 WeightGraph* repr(){
 	
@@ -25,6 +47,8 @@ WeightGraph* repr(){
 
 	out = fopen("output.txt", "w");
 	
+	double time;
+
 	if (!in) fprintf(out, "Could not open file.\n");
 	else{
 		int n, a;
@@ -35,6 +59,8 @@ WeightGraph* repr(){
 		
 		cin >> a;
 		
+		StartCounter();
+
 		G = new WeightGraph;
 		int x = G->initEssentials(n, a);
 		
@@ -83,11 +109,18 @@ WeightGraph* repr(){
 				printf("Finished assigning edges.\n");
 			}
 		}
+		time = GetCounter();
 	}
+	StartCounter();
 	G->printObj(out);
-	printf("Finished printing.\n");
+	double y = GetCounter();
+
+	printf("Finished printing.\n\n");
+	cout << time+y << "s.\n";
+
 	fclose(in);
 	fclose(out);
+	
 	return G;
 }
 
@@ -99,19 +132,47 @@ int main(){
 	
 	int search;
 	printf("\nWhich search method would you like?\n\n");
-	printf("Dijkstra - 0\nPrim - 1\n\n");
+	printf("Dijkstra - 0\nPrim - 1\nAverage Distance (Dijkstra-only) - 2\n\n");
 	cin >> search;
 
-	if (grafo->dijkstra == 0 && search == 0){
+	if (!grafo->dijkstra && (search == 2 || search == 0)){
 		printf("Cannot calculate Dijkstra because of negative edge weights.\n");
 		return 1;
 	}
 
+	int path;
 	int root;
-	printf("\nEnter the 1st tree's root (the valid interval is [%d, %d]): ", 1, grafo->vertexNum);
-	cin >> root;
-	printf("\n");
+	
+	if (search != 2){
+		printf("\nEnter the 1st tree's root (the valid interval is [1, %d]): ", grafo->vertexNum);
+		cin >> root;
+		printf("\n");		
+		if (search == 0){
+			printf("Would you like to calculate:\n0 - Every minimum path?; or\n[1, %d] - Only the chosen vertex's?: ", grafo->vertexNum);
+			cin >> path;
+			printf("\n");	
+		}
+	}
 
-	if (search == 0 && grafo->dijkstra == true) dijkstra(grafo, arq1, root);
+	if (search == 0){
+		StartCounter();
+		dijkstra(grafo, arq1, root, false, path);
+		cout << GetCounter() << "s.\n";
+		fclose(arq1);
+	}
+
+	if (search == 1){
+		StartCounter();
+		prim(grafo, arq1, root);
+		cout << GetCounter() << "s.\n";
+		fclose(arq1);	
+	}
+
+	if (search == 2){
+		StartCounter();
+		avgDistance(grafo, arq1);
+		cout << GetCounter() << "s.\n";
+		fclose(arq1);
+;	}
 	return 0;
 }
