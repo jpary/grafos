@@ -43,7 +43,6 @@ class WeightGraph{
 		int* degrees; // Vetor Número de Vértices com grau x
 		
 		vector<bool> descobertos;
-		vector<int> distancias;
 
 		int initEssentials(int size, int x){
 			if (size <= 0) return 1;
@@ -62,8 +61,6 @@ class WeightGraph{
 			this->nivel[0] = -1;
 			
 			this->descobertos.resize(vertexNum);
-			this->distancias.resize(vertexNum);
-			
 			this->dijkstra = true;
 
 			return 0;
@@ -142,7 +139,7 @@ class WeightGraph{
 		void initAdjMatrix(){
 			this->AdjMatrix = new vector<float> [vertexNum];
 			for (int i = 0; i < vertexNum; i++){
-				this->AdjMatrix[i].resize(vertexNum, false);
+				this->AdjMatrix[i].resize(vertexNum, inf);
 			}
 			this->vertexDegree = new int [vertexNum] ();
 		}
