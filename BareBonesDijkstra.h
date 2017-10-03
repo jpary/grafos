@@ -123,7 +123,7 @@ float dijkstra(WeightGraph* grafo, FILE* file, int raiz, bool avg, int min){
 		}
 		return 0.0;
 	}
-}*/
+*/}
 
 
 void avgDistance(WeightGraph* grafo, FILE* file){
