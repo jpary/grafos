@@ -93,9 +93,7 @@ float dijkstra(WeightGraph* grafo, FILE* file, int raiz, bool avg, int min){
 		for (int j = 0; j < componentes.size(); j++){
 			if (grafo->descobertos[componentes[j]-1] == 0) sum += dist[componentes[j]];
 		}
-		float vNum = (float) grafo->vertexNum;
-		float total = (vNum*(vNum-1))/2;
-		return sum/total;
+		return sum;
 	}
 
 	else{	
@@ -127,10 +125,32 @@ float dijkstra(WeightGraph* grafo, FILE* file, int raiz, bool avg, int min){
 
 
 void avgDistance(WeightGraph* grafo, FILE* file){
-	double mean = 0.0;
+	vector<int> vertices;
+	for (int i = 1; i <= grafo->vertexNum; i++) vertices.push_back(i);
 	
-	for (int i = 1; i < grafo->vertexNum; i++) mean += (double) dijkstra(grafo, file, i, true, 0);
+	int limit = (int) ((grafo->vertexNum-1)*grafo->vertexNum)/200;
+
+	printf("limit = %d\n", limit);
+
+	float sum = 0.0;
+	int times = 0;
+	int y;
 	
-	printf("\nAverage Distance: %.10f\n\n", mean);
+	float mean = 0.0;
+
+	while(sum == 0 || (abs(sum/times - mean) > 0.0005 && times < 100 && limit > times)){
+		if (times != 0) mean = sum/times;
+		y = rand() % vertices.size();
+		printf("y: %d\n", y);
+		sum += dijkstra(grafo, file, vertices[y], true, 0);
+		intSwap(&vertices, vertices.size()-1, y);
+		vertices.pop_back();	
+		times += vertices.size();
+		printf("%d\n", times);
+	}
+
+	mean = sum/times;
+	
+	printf("Average Distance: %.10f\n", mean);
 	fprintf(file, "Distância Média:	%.10f\n", mean);
 }
